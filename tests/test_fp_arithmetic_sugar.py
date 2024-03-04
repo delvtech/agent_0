@@ -1,4 +1,5 @@
 """Tests for arethmetic syntax sugar with the FixedPoint class"""
+
 import unittest
 
 from fixedpointmath import errors
@@ -24,6 +25,7 @@ class TestFixedPoint(unittest.TestCase):
         Instead, `fp(1) == 1e-18`, while `fp(1.0) == 1e18`.
 
     """
+
     ZERO = FixedPoint("0.0")
     ONE = FixedPoint("1.0")
     NEG_ONE = FixedPoint("-1.0")
@@ -294,9 +296,7 @@ class TestFixedPoint(unittest.TestCase):
         assert float(FixedPoint("6.0") / FixedPoint("100.0")) == 0.06
         assert float(FixedPoint("0.006") / FixedPoint("0.001")) == 6
         # div rounding
-        assert FixedPoint(scaled_value=2 * 10**18) / FixedPoint(scaled_value=1 * 10**37) == FixedPoint(
-            scaled_value=0
-        )
+        assert FixedPoint(scaled_value=2 * 10**18) / FixedPoint(scaled_value=1 * 10**37) == FixedPoint(scaled_value=0)
         assert FixedPoint(scaled_value=2 * 10**18).div_up(FixedPoint(scaled_value=1 * 10**37)) == FixedPoint(
             scaled_value=1
         )

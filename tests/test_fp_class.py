@@ -1,4 +1,5 @@
 """Tests for the FixedPoint class methods"""
+
 import math
 import unittest
 from decimal import Decimal

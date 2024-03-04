@@ -1,4 +1,5 @@
 """Utility functions for doing special math"""
+
 # Modules imported here are simply for easier namespace resolution, e.g.,
 # from fixedpointmath import FixedPoint
 # instead of
