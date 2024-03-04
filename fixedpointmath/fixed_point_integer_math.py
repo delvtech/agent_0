@@ -1,4 +1,5 @@
 """Fixed Point Integer math library"""
+
 from __future__ import annotations
 
 from . import errors

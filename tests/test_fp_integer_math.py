@@ -1,4 +1,5 @@
 """FixedPoint integer math tests inspired from solidity hyperdrive implementation"""
+
 import math
 import unittest
 

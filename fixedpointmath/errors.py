@@ -1,4 +1,5 @@
 """Define Python user-defined exceptions"""
+
 from __future__ import annotations
 
 

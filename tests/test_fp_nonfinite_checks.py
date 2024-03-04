@@ -1,4 +1,5 @@
 """Tests for non-finite (inf or nan) operations with the FixedPoint datatype"""
+
 import unittest
 
 from fixedpointmath import FixedPoint
@@ -9,6 +10,7 @@ class TestFixedPointNonFinite(unittest.TestCase):
 
     Unlike normal integers, the FixedPoint type
     """
+
     ZERO = FixedPoint("0.0")
     ONE = FixedPoint("1.0")
     NEG_ONE = FixedPoint("-1.0")

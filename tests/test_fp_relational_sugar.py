@@ -1,4 +1,5 @@
 """Tests for relational (comparison) syntax sugar with the FixedPoint class"""
+
 import unittest
 
 from fixedpointmath import FixedPoint
@@ -11,6 +12,7 @@ class TestFixedPointNonFinite(unittest.TestCase):
 
     Unlike normal integers, the FixedPoint type
     """
+
     ONE = FixedPoint("1.0")
     NEG_ONE = FixedPoint("-1.0")
     ODD_FINITE = FixedPoint("9.0")
