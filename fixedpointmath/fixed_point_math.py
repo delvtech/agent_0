@@ -42,11 +42,11 @@ def minimum(x: NUMERIC, y: NUMERIC) -> NUMERIC:
     return y
 
 
-def clip(x: NUMERIC, min: NUMERIC, max: NUMERIC) -> NUMERIC:
+def clip(x: NUMERIC, low: NUMERIC, high: NUMERIC) -> NUMERIC:
     """Clip the input, x, to be within (min, max), inclusive"""
-    if min > max:
-        raise ValueError(f"{min=} must be <= {max=}.")
-    return minimum(maximum(x, min), max)
+    if low > high:
+        raise ValueError(f"{low=} must be <= {high=}.")
+    return minimum(maximum(x, low), high)
 
 
 def exp(x: NUMERIC) -> NUMERIC:
