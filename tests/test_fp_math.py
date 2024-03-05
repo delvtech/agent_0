@@ -14,13 +14,14 @@ class TestFixedPointMath(unittest.TestCase):
     APPROX_EQ = FixedPoint(1e3)
 
     ONE = FixedPoint("1.0")
+    TWO = FixedPoint("2.0")
     NEG_ONE = FixedPoint("-1.0")
     INF = FixedPoint("inf")
     NEG_INF = FixedPoint("-inf")
     NAN = FixedPoint("nan")
 
     def test_clip(self):
-        """Test clip method with finite values"""
+        """Test clip method with finite values."""
         assert FixedPointMath.clip(0, 1, 2) == 1
         assert FixedPointMath.clip(-1, -5, 5) == -1
         assert FixedPointMath.clip(3, -3, -1) == -1
@@ -32,7 +33,7 @@ class TestFixedPointMath(unittest.TestCase):
         ) == FixedPoint(1.0)
 
     def test_clip_nonfinite(self):
-        """Test clip method with non-finite values"""
+        """Test clip method with non-finite values."""
         assert FixedPointMath.clip(self.NAN, self.NEG_ONE, self.ONE).is_nan() is True
         assert FixedPointMath.clip(self.NAN, self.NEG_INF, self.INF).is_nan() is True
         assert FixedPointMath.clip(self.ONE, self.NEG_INF, self.INF) == self.ONE
@@ -42,14 +43,14 @@ class TestFixedPointMath(unittest.TestCase):
         assert FixedPointMath.clip(self.NEG_INF, self.NEG_ONE, self.INF) == self.NEG_ONE
 
     def test_clip_error(self):
-        """Test clip method with bad inputs (min > max)"""
+        """Test clip method with bad inputs (min > max)."""
         with self.assertRaises(ValueError):
             _ = FixedPointMath.clip(FixedPoint(5.0), self.INF, self.NEG_INF)
         with self.assertRaises(ValueError):
             _ = FixedPointMath.clip(5, 3, 1)
 
     def test_minimum(self):
-        """Test minimum function"""
+        """Test minimum function."""
         assert FixedPointMath.minimum(0, 1) == 0
         assert FixedPointMath.minimum(-1, 1) == -1
         assert FixedPointMath.minimum(-1, -3) == -3
@@ -61,7 +62,7 @@ class TestFixedPointMath(unittest.TestCase):
         )
 
     def test_minimum_nonfinite(self):
-        """Test minimum method"""
+        """Test minimum method."""
         assert FixedPointMath.minimum(self.NAN, self.NEG_ONE).is_nan() is True
         assert FixedPointMath.minimum(self.NAN, self.INF).is_nan() is True
         assert FixedPointMath.minimum(self.ONE, self.INF) == self.ONE
@@ -69,7 +70,7 @@ class TestFixedPointMath(unittest.TestCase):
         assert FixedPointMath.minimum(self.INF, self.NEG_INF) == self.NEG_INF
 
     def test_maximum(self):
-        """Test maximum function"""
+        """Test maximum function."""
         assert FixedPointMath.maximum(0, 1) == 1
         assert FixedPointMath.maximum(-1, 1) == 1
         assert FixedPointMath.maximum(-1, -3) == -1
@@ -79,7 +80,7 @@ class TestFixedPointMath(unittest.TestCase):
         assert FixedPointMath.maximum(FixedPoint("3.0"), FixedPoint(scaled_value=int(3e18 - 1e-17))) == FixedPoint(3.0)
 
     def test_maximum_nonfinite(self):
-        """Test maximum method"""
+        """Test maximum method."""
         assert FixedPointMath.maximum(self.NAN, self.NEG_ONE).is_nan() is True
         assert FixedPointMath.maximum(self.NAN, self.INF).is_nan() is True
         assert FixedPointMath.maximum(self.ONE, self.INF) == self.INF
@@ -87,7 +88,7 @@ class TestFixedPointMath(unittest.TestCase):
         assert FixedPointMath.maximum(self.INF, self.NEG_INF) == self.INF
 
     def test_exp(self):
-        """Test exp function"""
+        """Test exp function."""
         tolerance = 1e-18
         result = FixedPointMath.exp(FixedPoint("1.0"))
         expected = FixedPoint(scaled_value=2718281828459045235)
@@ -109,13 +110,13 @@ class TestFixedPointMath(unittest.TestCase):
         assert math.isclose(result, expected, rel_tol=tolerance), f"exp(x):\n  {result=},\n{expected=}"
 
     def test_exp_nonfinite(self):
-        """Test exp method"""
+        """Test exp method."""
         assert FixedPointMath.exp(self.NAN).is_nan() is True
         assert FixedPointMath.exp(self.INF) == self.INF
         assert FixedPointMath.exp(self.NEG_INF) == self.NEG_INF
 
     def test_sqrt(self):
-        r"""Test sqrt method"""
+        r"""Test sqrt method."""
         result = FixedPointMath.sqrt(self.ONE)
         expected = self.ONE
         self.assertEqual(result, expected)
@@ -130,8 +131,38 @@ class TestFixedPointMath(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_sqrt_nonfinite(self):
-        r"""Test failure mode of fixed-point sqrt"""
-        with self.assertRaises(ValueError):
-            _ = FixedPointMath.sqrt(FixedPoint("-inf"))
+        r"""Test non-finite mode of fixed-point sqrt."""
         assert FixedPointMath.sqrt(self.NAN).is_nan() is True
         assert FixedPointMath.sqrt(self.INF) == self.INF
+
+    def test_sqrt_fail(self):
+        r"""Test failure mode of fixed-point sqrt."""
+        with self.assertRaises(ValueError):
+            _ = FixedPointMath.sqrt(FixedPoint("-inf"))
+
+    def test_isclose(self):
+        r"""Test fixed-point isclose method."""
+        self.assertEqual(FixedPointMath.isclose(self.ONE, self.ONE), True)
+        self.assertEqual(FixedPointMath.isclose(self.ONE, self.TWO), False)
+        self.assertEqual(FixedPointMath.isclose(self.ONE, self.TWO, abs_tol=self.ONE), True)
+        delta = FixedPoint("0.00001")
+        self.assertEqual(FixedPointMath.isclose(self.ONE, self.ONE + delta, abs_tol=delta), True)
+        self.assertEqual(FixedPointMath.isclose(self.ONE, self.ONE + delta, abs_tol=delta / 10), False)
+
+    def test_isclose_nonfinite(self):
+        r"""Test fixed-point isclose method for non-finite values."""
+        self.assertEqual(FixedPointMath.isclose(self.INF, self.INF), True)
+        self.assertEqual(FixedPointMath.isclose(self.NEG_INF, self.NEG_INF), True)
+        self.assertEqual(FixedPointMath.isclose(self.INF, self.NEG_INF), False)
+        self.assertEqual(FixedPointMath.isclose(self.NAN, self.NAN), False)
+        self.assertEqual(FixedPointMath.isclose(self.INF, self.NAN), False)
+        self.assertEqual(FixedPointMath.isclose(self.NEG_INF, self.NAN), False)
+
+    def test_isclose_fail(self):
+        r"""Test failure mode of fixed-point isclose."""
+        with self.assertRaises(ValueError):
+            _ = FixedPointMath.isclose(FixedPoint("5.0"), FixedPoint("1.0"), abs_tol=FixedPoint("inf"))
+        with self.assertRaises(ValueError):
+            _ = FixedPointMath.isclose(FixedPoint("5.0"), FixedPoint("1.0"), abs_tol=FixedPoint("-inf"))
+        with self.assertRaises(ValueError):
+            _ = FixedPointMath.isclose(FixedPoint("5.0"), FixedPoint("1.0"), abs_tol=FixedPoint("nan"))

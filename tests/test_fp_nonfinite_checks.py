@@ -47,11 +47,11 @@ class TestFixedPointNonFinite(unittest.TestCase):
 
     def test_is_finite(self):
         """Test that FixedPoint can detect if it is not inf or nan"""
-        assert self.ZERO.is_finite() is True
-        assert self.SMALL_FINITE.is_finite() is True
-        assert self.NAN.is_finite() is False
-        assert self.INF.is_finite() is False
-        assert self.NEG_INF.is_finite() is False
+        assert self.ZERO.isfinite() is True
+        assert self.SMALL_FINITE.isfinite() is True
+        assert self.NAN.isfinite() is False
+        assert self.INF.isfinite() is False
+        assert self.NEG_INF.isfinite() is False
 
     def test_sign_nonfinite(self):
         """Test that FixedPoint knows its sign"""
