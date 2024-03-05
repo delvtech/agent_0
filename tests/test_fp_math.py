@@ -3,8 +3,7 @@
 import math
 import unittest
 
-from fixedpointmath import (FixedPoint, clip, exp, isclose, maximum, minimum,
-                            sqrt)
+from fixedpointmath import FixedPoint, clip, exp, isclose, maximum, minimum, sqrt
 
 # pylint: disable=unneeded-not
 
@@ -29,9 +28,9 @@ class TestFixedPointMath(unittest.TestCase):
         assert clip(-1.0, -3.0, 1) == -1.0
         assert clip(1.0, 3.0, 3.0) == 3.0
         assert clip(FixedPoint(1.0), FixedPoint(0.0), FixedPoint(3.0)) == FixedPoint(1.0)
-        assert clip(
-            FixedPoint(1.0), FixedPoint(scaled_value=1), FixedPoint(scaled_value=int(1e18 + 1))
-        ) == FixedPoint(1.0)
+        assert clip(FixedPoint(1.0), FixedPoint(scaled_value=1), FixedPoint(scaled_value=int(1e18 + 1))) == FixedPoint(
+            1.0
+        )
 
     def test_clip_nonfinite(self):
         """Test clip method with non-finite values."""
