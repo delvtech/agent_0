@@ -10,4 +10,4 @@
 
 from .fixed_point import FixedPoint
 from .fixed_point_integer_math import FixedPointIntegerMath
-from .fixed_point_math import *
+from .fixed_point_math import clip, exp, isclose, maximum, minimum, sqrt

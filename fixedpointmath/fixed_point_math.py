@@ -14,34 +14,6 @@ NUMERIC = TypeVar("NUMERIC", FixedPoint, int, float)
 # pylint: disable=invalid-name
 
 
-def maximum(x: NUMERIC, y: NUMERIC) -> NUMERIC:
-    """Compare the two inputs and return the greater value.
-
-    If the first argument equals the second, return the first.
-    """
-    if isinstance(x, FixedPoint) and x.is_nan():
-        return x
-    if isinstance(y, FixedPoint) and y.is_nan():
-        return y
-    if x >= y:
-        return x
-    return y
-
-
-def minimum(x: NUMERIC, y: NUMERIC) -> NUMERIC:
-    """Compare the two inputs and return the lesser value.
-
-    If the first argument equals the second, return the first.
-    """
-    if isinstance(x, FixedPoint) and x.is_nan():
-        return x
-    if isinstance(y, FixedPoint) and y.is_nan():
-        return y
-    if x <= y:
-        return x
-    return y
-
-
 def clip(x: NUMERIC, low: NUMERIC, high: NUMERIC) -> NUMERIC:
     """Clip the input, x, to be within (min, max), inclusive"""
     if low > high:
@@ -56,11 +28,6 @@ def exp(x: NUMERIC) -> NUMERIC:
             return x
         return FixedPoint(scaled_value=FixedPointIntegerMath.exp(x.scaled_value))
     return type(x)(math.exp(x))
-
-
-def sqrt(x: NUMERIC) -> NUMERIC:
-    """Performs sqrt(x)"""
-    return type(x)(math.sqrt(x))
 
 
 def isclose(a: NUMERIC, b: NUMERIC, abs_tol: NUMERIC = FixedPoint("0.0")) -> bool:
@@ -97,3 +64,36 @@ def isclose(a: NUMERIC, b: NUMERIC, abs_tol: NUMERIC = FixedPoint("0.0")) -> boo
     ):
         raise ValueError("Input abs_tol must be finite.")
     return abs(a - b) <= abs_tol
+
+
+def maximum(x: NUMERIC, y: NUMERIC) -> NUMERIC:
+    """Compare the two inputs and return the greater value.
+
+    If the first argument equals the second, return the first.
+    """
+    if isinstance(x, FixedPoint) and x.is_nan():
+        return x
+    if isinstance(y, FixedPoint) and y.is_nan():
+        return y
+    if x >= y:
+        return x
+    return y
+
+
+def minimum(x: NUMERIC, y: NUMERIC) -> NUMERIC:
+    """Compare the two inputs and return the lesser value.
+
+    If the first argument equals the second, return the first.
+    """
+    if isinstance(x, FixedPoint) and x.is_nan():
+        return x
+    if isinstance(y, FixedPoint) and y.is_nan():
+        return y
+    if x <= y:
+        return x
+    return y
+
+
+def sqrt(x: NUMERIC) -> NUMERIC:
+    """Performs sqrt(x)"""
+    return type(x)(math.sqrt(x))
