@@ -100,6 +100,4 @@ class FixedPointMath:
             isinstance(abs_tol, float) and not math.isfinite(abs_tol)
         ):
             raise ValueError("Input abs_tol must be finite.")
-        if abs(a - b) <= abs_tol:
-            return True
-        return False
+        return abs(a - b) <= abs_tol
