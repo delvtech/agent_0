@@ -358,7 +358,7 @@ class FixedPoint:
     def __pow__(self, other: OtherTypes | FixedPoint) -> FixedPoint:
         r"""Enables '**' syntax"""
         other = self._coerce_other(other)
-        if self.is_finite() and other.is_finite():
+        if self.isfinite() and other.isfinite():
             return FixedPoint(
                 scaled_value=FixedPointIntegerMath.pow(self.scaled_value, other.scaled_value),
                 decimal_places=self.decimal_places,
@@ -373,7 +373,7 @@ class FixedPoint:
         return other**self  # then normal pow
 
     def __sqrt__(self) -> FixedPoint:
-        if self.is_finite():
+        if self.isfinite():
             return FixedPoint(
                 scaled_value=FixedPointIntegerMath.sqrt(self.scaled_value),
                 decimal_places=self.decimal_places,
@@ -399,7 +399,7 @@ class FixedPoint:
         other = self._coerce_other(other)
         if other == FixedPoint("0.0"):
             raise errors.DivisionByZero
-        if not self.is_finite() or other.is_nan():
+        if not self.isfinite() or other.is_nan():
             return FixedPoint("nan")
         if other.is_inf():
             return self
@@ -434,7 +434,7 @@ class FixedPoint:
     def __eq__(self, other: OtherTypes | FixedPoint) -> bool:
         r"""Enables `==` syntax"""
         other = self._coerce_other(other)
-        if not self.is_finite() or not other.is_finite():
+        if not self.isfinite() or not other.isfinite():
             if self.is_nan() or other.is_nan():
                 return False
             return self.special_value == other.special_value
@@ -443,7 +443,7 @@ class FixedPoint:
     def __ne__(self, other: OtherTypes | FixedPoint) -> bool:
         r"""Enables `!=` syntax"""
         other = self._coerce_other(other)
-        if not self.is_finite() or not other.is_finite():
+        if not self.isfinite() or not other.isfinite():
             if self.is_nan() or other.is_nan():
                 return True
             return self.special_value != other.special_value
@@ -510,7 +510,7 @@ class FixedPoint:
 
         This rounds toward 0: trunc() is equivalent to floor() for positive x, and equivalent to ceil() for negative x.
         """
-        if not self.is_finite():
+        if not self.isfinite():
             return self
         integer, _ = str(self).split(".")  # extract the integer part
         return FixedPoint(integer + ".0")
@@ -520,7 +520,7 @@ class FixedPoint:
 
         Given a real number x, return as output the greatest integer less than or equal to x.
         """
-        if not self.is_finite():
+        if not self.isfinite():
             return self
         integer, remainder = str(self).split(".")
         # if the number is negative & there is a remainder
@@ -533,7 +533,7 @@ class FixedPoint:
 
         Given a real number x, return as output the smallest integer greater than or equal to x.
         """
-        if not self.is_finite():
+        if not self.isfinite():
             return self
         integer, remainder = str(self).split(".")
         # if there is a remainder
@@ -552,7 +552,7 @@ class FixedPoint:
         defaults to 0 (round to nearest integer).
         Uses Python's "round half to even" strategy, which is the default for the built-in round function.
         """
-        if not self.is_finite():
+        if not self.isfinite():
             return self
         integer, remainder = str(self).split(".")  # lhs = integer part, rhs = fractional part
         if ndigits >= len(remainder):
@@ -597,7 +597,7 @@ class FixedPoint:
 
     def __bool__(self) -> bool:
         r"""Cast to bool"""
-        if self.is_finite() and self != FixedPoint(0):
+        if self.isfinite() and self != FixedPoint(0):
             return True
         return False
 
@@ -635,7 +635,7 @@ class FixedPoint:
     def __hash__(self) -> int:
         r"""Returns a hash of self"""
         # act like a float for non-finite
-        if not self.is_finite():
+        if not self.isfinite():
             return hash((float(self), self.__class__.__name__))
         # act like an integer otherwise
         return hash((self.scaled_value, self.__class__.__name__))
@@ -686,11 +686,11 @@ class FixedPoint:
 
     def is_zero(self) -> bool:
         r"""Return True if self is zero, and False is self is non-zero or non-finite"""
-        if not self.is_finite():
+        if not self.isfinite():
             return False
         return self.scaled_value == 0
 
-    def is_finite(self) -> bool:
+    def isfinite(self) -> bool:
         r"""Return True if self is finite, that is not inf, -inf, or nan"""
         return not (self.is_nan() or self.is_inf())
 
