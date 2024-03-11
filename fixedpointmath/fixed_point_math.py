@@ -66,32 +66,40 @@ def isclose(a: NUMERIC, b: NUMERIC, abs_tol: NUMERIC = FixedPoint("0.0")) -> boo
     return abs(a - b) <= abs_tol
 
 
-def maximum(x: NUMERIC, y: NUMERIC) -> NUMERIC:
-    """Compare the two inputs and return the greater value.
+def maximum(*args: NUMERIC) -> NUMERIC:
+    """Compare the inputs and return the greatest value.
 
     If the first argument equals the second, return the first.
     """
-    if isinstance(x, FixedPoint) and x.is_nan():
-        return x
-    if isinstance(y, FixedPoint) and y.is_nan():
-        return y
-    if x >= y:
-        return x
-    return y
+    # use builtin for generic types
+    if isinstance(args[0], (float, int)):
+        return type(args[0])(max(*args))
+    # else, we're FixedPoint
+    current_max = FixedPoint("-inf")
+    for arg in args:
+        if isinstance(arg, FixedPoint) and arg.is_nan():  # any nan means minimum is nan
+            return arg
+        if arg >= current_max:  # pylint: disable=consider-using-max-builtin
+            current_max = arg
+    return type(args[0])(current_max)
 
 
-def minimum(x: NUMERIC, y: NUMERIC) -> NUMERIC:
-    """Compare the two inputs and return the lesser value.
+def minimum(*args: NUMERIC) -> NUMERIC:
+    """Compare the inputs and return the lowest value.
 
     If the first argument equals the second, return the first.
     """
-    if isinstance(x, FixedPoint) and x.is_nan():
-        return x
-    if isinstance(y, FixedPoint) and y.is_nan():
-        return y
-    if x <= y:
-        return x
-    return y
+    # use builtin for generic types
+    if isinstance(args[0], (int, float)):
+        return type(args[0])(min(*args))
+    # else, we're FixedPoint
+    current_min = FixedPoint("inf")
+    for arg in args:
+        if isinstance(arg, FixedPoint) and arg.is_nan():  # any nan means minimum is nan
+            return arg
+        if arg <= current_min:  # pylint: disable=consider-using-min-builtin
+            current_min = arg
+    return type(args[0])(current_min)
 
 
 def sqrt(x: NUMERIC) -> NUMERIC:
