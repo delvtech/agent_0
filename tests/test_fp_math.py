@@ -22,11 +22,11 @@ class TestFixedPointMath(unittest.TestCase):
 
     def test_clip(self):
         """Test clip method with finite values."""
-        assert clip(0, 1, 2) == 1
-        assert clip(-1, -5, 5) == -1
-        assert clip(3, -3, -1) == -1
-        assert clip(-1.0, -3.0, 1) == -1.0
-        assert clip(1.0, 3.0, 3.0) == 3.0
+        assert clip(0, 1, 2) == FixedPoint("1")
+        assert clip(-1, -5, 5) == FixedPoint("-1")
+        assert clip(3, -3, -1) == FixedPoint("-1")
+        assert clip(-1.0, -3.0, 1) == FixedPoint("-1.0")
+        assert clip(1.0, 3.0, 3.0) == FixedPoint("3.0")
         assert clip(FixedPoint(1.0), FixedPoint(0.0), FixedPoint(3.0)) == FixedPoint(1.0)
         assert clip(FixedPoint(1.0), FixedPoint(scaled_value=1), FixedPoint(scaled_value=int(1e18 + 1))) == FixedPoint(
             1.0
@@ -51,15 +51,18 @@ class TestFixedPointMath(unittest.TestCase):
 
     def test_minimum(self):
         """Test minimum function."""
-        assert minimum(0, 1) == 0
-        assert minimum(-1, 1) == -1
-        assert minimum(-1, -3) == -3
-        assert minimum(-1.0, -3.0) == -3.0
-        assert minimum(1.0, 3.0) == 1.0
-        assert minimum(FixedPoint(1.0), FixedPoint(3.0)) == FixedPoint(1.0)
+        assert minimum(0, 1) == FixedPoint("0")
+        assert minimum(-1, 1) == FixedPoint("-1")
+        assert minimum(-1, -3) == FixedPoint("-3")
+        assert minimum(-1, 0, -3) == FixedPoint("-3")
+        assert minimum(-1.0, -3.0) == FixedPoint("-3.0")
+        assert minimum(1.0, 3.0) == FixedPoint("1.0")
+        assert minimum(1.0, 3.0, 0.5) == FixedPoint("0.5")
+        assert minimum(FixedPoint("1.0"), FixedPoint("3.0")) == FixedPoint("1.0")
         assert minimum(FixedPoint("3.0"), FixedPoint(scaled_value=int(3e18 - 1e-17))) == FixedPoint(
             scaled_value=int(3e18 - 1e-17)
         )
+        assert minimum(FixedPoint("1.0"), FixedPoint("-100.0"), FixedPoint("3.0")) == FixedPoint("-100.0")
 
     def test_minimum_nonfinite(self):
         """Test minimum method."""
@@ -71,12 +74,14 @@ class TestFixedPointMath(unittest.TestCase):
 
     def test_maximum(self):
         """Test maximum function."""
-        assert maximum(0, 1) == 1
-        assert maximum(-1, 1) == 1
-        assert maximum(-1, -3) == -1
-        assert maximum(-1.0, -3.0) == -1.0
-        assert maximum(1.0, 3.0) == 3.0
-        assert maximum(FixedPoint(1.0), FixedPoint(3.0)) == FixedPoint(3.0)
+        assert maximum(0, 1) == FixedPoint("1")
+        assert maximum(-1, 1) == FixedPoint("1")
+        assert maximum(-1, -3) == FixedPoint("-1")
+        assert maximum(-1, 0, -3) == FixedPoint("0")
+        assert maximum(-1.0, 0.0, -3.0) == FixedPoint("0.0")
+        assert maximum(1.0, 3.0) == FixedPoint("3.0")
+        assert maximum(FixedPoint("1.0"), FixedPoint("3.0")) == FixedPoint("3.0")
+        assert maximum(FixedPoint("1.0"), FixedPoint("100.0"), FixedPoint("3.0")) == FixedPoint("100")
         assert maximum(FixedPoint("3.0"), FixedPoint(scaled_value=int(3e18 - 1e-17))) == FixedPoint(3.0)
 
     def test_maximum_nonfinite(self):
