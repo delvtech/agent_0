@@ -14,13 +14,6 @@ NUMERIC = TypeVar("NUMERIC", FixedPoint, int, float)
 # pylint: disable=invalid-name
 
 
-def clip(x: NUMERIC, low: NUMERIC, high: NUMERIC) -> NUMERIC:
-    """Clip the input, x, to be within (min, max), inclusive"""
-    if low > high:
-        raise ValueError(f"{low=} must be <= {high=}.")
-    return minimum(maximum(x, low), high)
-
-
 def exp(x: NUMERIC) -> NUMERIC:
     """Performs e^x"""
     if isinstance(x, FixedPoint):
@@ -66,40 +59,41 @@ def isclose(a: NUMERIC, b: NUMERIC, abs_tol: NUMERIC = FixedPoint("0.0")) -> boo
     return abs(a - b) <= abs_tol
 
 
-def maximum(*args: NUMERIC) -> NUMERIC:
+def maximum(*args: NUMERIC) -> FixedPoint:
     """Compare the inputs and return the greatest value.
-
-    If the first argument equals the second, return the first.
+    If inputs are not FixedPoint type, then we convert it to FixedPoint.
     """
-    # use builtin for generic types
-    if isinstance(args[0], (float, int)):
-        return type(args[0])(max(*args))
-    # else, we're FixedPoint
     current_max = FixedPoint("-inf")
     for arg in args:
-        if isinstance(arg, FixedPoint) and arg.is_nan():  # any nan means minimum is nan
+        arg = FixedPoint(arg)
+        if arg.is_nan():  # any nan means minimum is nan
             return arg
         if arg >= current_max:  # pylint: disable=consider-using-max-builtin
             current_max = arg
-    return type(args[0])(current_max)
+    return current_max
 
 
-def minimum(*args: NUMERIC) -> NUMERIC:
+def minimum(*args: NUMERIC) -> FixedPoint:
     """Compare the inputs and return the lowest value.
-
-    If the first argument equals the second, return the first.
+    If inputs are not FixedPoint type, then we convert it to FixedPoint.
     """
-    # use builtin for generic types
-    if isinstance(args[0], (int, float)):
-        return type(args[0])(min(*args))
-    # else, we're FixedPoint
     current_min = FixedPoint("inf")
     for arg in args:
-        if isinstance(arg, FixedPoint) and arg.is_nan():  # any nan means minimum is nan
+        arg = FixedPoint(arg)
+        if arg.is_nan():  # any nan means minimum is nan
             return arg
         if arg <= current_min:  # pylint: disable=consider-using-min-builtin
             current_min = arg
-    return type(args[0])(current_min)
+    return current_min
+
+
+def clip(x: NUMERIC, low: NUMERIC, high: NUMERIC) -> FixedPoint:
+    """Clip the input, x, to be within (min, max), inclusive.
+    If inputs are not FixedPoint type, then we convert it to FixedPoint.
+    """
+    if low > high:
+        raise ValueError(f"{low=} must be <= {high=}.")
+    return minimum(type(x)(maximum(x, low)), high)
 
 
 def sqrt(x: NUMERIC) -> NUMERIC:
